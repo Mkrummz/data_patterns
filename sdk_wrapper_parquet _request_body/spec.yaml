@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: OneStream Data Ingestion API
+  version: 1.0.0
+  description: API for Parquet data uploads to OneStream using SDK wrapper.
+servers:
+  - url: https://onestream.example.com
+
+paths:
+  /upload/file:
+    post:
+      summary: "Upload Parquet data using SDK wrapper"
+      description: "Uploads in-memory Parquet data (DataFrame) to the data lake and supports additional metadata."
+      operationId: uploadDataFrame
+      parameters:
+        - name: destination_path
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "/parquet-datasets/2024/products"
+          description: The path in the data lake where the data will be stored.
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+              description: In-memory Parquet data (binary stream) to be uploaded
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_tag:
+                  type: string
+                  example: "BusinessAnalytics"
+                dataset_version:
+                  type: string
+                  example: "v1.2"
+                upload_time:
+                  type: number
+                  example: 1627840293.12
+      responses:
+        200:
+          description: Parquet data successfully uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  destination_path:
+                    type: string
+                    example: "/parquet-datasets/2024/products"
+                  message:
+                    type: string
+                    example: "Parquet data successfully uploaded."
+        400:
+          description: Error in data upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failure"
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Data format not supported"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+security:
+  - ApiKeyAuth: []
