@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: OneStream Data Ingestion API
+  version: 1.0.0
+  description: API for Parquet file uploads to OneStream using SDK wrapper.
+servers:
+  - url: https://onestream.example.com
+
+paths:
+  /upload/file:
+    post:
+      summary: "Upload Parquet files using SDK wrapper"
+      description: "Uploads a Parquet file to the data lake and supports additional metadata."
+      operationId: uploadFile
+      parameters:
+        - name: destination_path
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "/parquet-datasets/2024/products"
+          description: The path in the data lake where the file will be stored.
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+              description: Parquet file to be uploaded
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_tag:
+                  type: string
+                  example: "BusinessAnalytics"
+                dataset_version:
+                  type: string
+                  example: "v1.2"
+                upload_time:
+                  type: number
+                  example: 1627840293.12
+      responses:
+        200:
+          description: Parquet file successfully uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  destination_path:
+                    type: string
+                    example: "/parquet-datasets/2024/products"
+                  message:
+                    type: string
+                    example: "Parquet file successfully uploaded."
+        400:
+          description: Error in file upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failure"
+                  error:
+                    type: string
+                    description: Error message
+                    example: "File format not supported"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+security:
+  - ApiKeyAuth: []

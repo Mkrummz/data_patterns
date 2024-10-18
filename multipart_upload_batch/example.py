@@ -1,23 +1,35 @@
 import boto3
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoCredentialsError, ClientError
+import time
 
-# Credentials for authentication
-access_key = 'your_access_key'
-secret_key = 'your_secret_key'
-bucket_name = 'internal-datalake'
-file_path = 'data/batch-upload.csv'
-object_key = 'batch-data/uploads/2024/batch-upload.csv'
+# Credentials and settings for OneStream (could be similar to S3)
+access_key = 'your_onestream_access_key'
+secret_key = 'your_onestream_secret_key'
+region = 'us-west-2'
+bucket_name = 'onestream-datalake'
+file_path = 'data/multi-part-upload.csv'
+object_key = 'datasets/2024/multi-part-upload.csv'
 
-# Initialize the S3 client using boto3 (can be a data lake SDK wrapper)
-s3_client = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+# Additional metadata
+team_tag = "DataOps"
+batch_id = "batch_2024_01"
+upload_timestamp = time.time()
+
+# Initialize OneStream client (AWS S3 compatible)
+s3_client = boto3.client('s3', region_name=region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
 # Upload large file in multiple parts
-def multipart_upload(file_path, bucket, object_key):
+def multipart_upload(file_path, bucket, object_key, metadata):
     try:
-        response = s3_client.upload_file(file_path, bucket, object_key)
-        print(f"File {file_path} uploaded successfully as {object_key}.")
-    except NoCredentialsError:
-        print("Credentials not available.")
+        s3_client.upload_file(file_path, bucket, object_key, ExtraArgs={'Metadata': metadata, 'StorageClass': 'STANDARD_IA'})
+        print(f"File {file_path} successfully uploaded to {object_key}.")
+    except (NoCredentialsError, ClientError) as e:
+        print(f"Failed to upload file: {str(e)}")
 
-# Call the multi-part upload function
-multipart_upload(file_path, bucket_name, object_key)
+# Call multi-part upload
+metadata = {
+    'team_tag': team_tag,
+    'batch_id': batch_id,
+    'upload_timestamp': str(upload_timestamp)
+}
+multipart_upload(file_path, bucket_name, object_key, metadata)

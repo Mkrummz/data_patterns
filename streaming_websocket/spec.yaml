@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: OneStream Data Ingestion API
+  version: 1.0.0
+  description: API for ingesting data into the OneStream data lake.
+servers:
+  - url: wss://onestream.example.com
+
+paths:
+  /streaming:
+    post:
+      summary: "Stream data to OneStream via WebSocket"
+      description: "Streams real-time data to OneStream data lake."
+      operationId: streamData
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_id:
+                  type: string
+                  description: Unique identifier for the device
+                  example: "XYZ987"
+                humidity:
+                  type: number
+                  description: Humidity level of the device
+                  example: 60.2
+                timestamp:
+                  type: number
+                  description: Unix timestamp when data was generated
+                  example: 1627840293.12
+                event:
+                  type: string
+                  description: Event name or type
+                  example: "environment_update"
+                team_tag:
+                  type: string
+                  description: Tag identifying the team sending the data
+                  example: "Team-Alpha"
+                environment:
+                  type: string
+                  description: Environment context (production, staging)
+                  example: "production"
+      responses:
+        200:
+          description: Data successfully streamed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ack:
+                    type: string
+                    description: Acknowledgment of success or failure
+                    example: "success"
+                  received_timestamp:
+                    type: number
+                    description: Timestamp when the data was received
+                    example: 1627840300.00
+        400:
+          description: Error in streaming data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ack:
+                    type: string
+                    description: Acknowledgment of failure
+                    example: "failure"
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Invalid JSON payload"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []

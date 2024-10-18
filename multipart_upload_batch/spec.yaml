@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: OneStream Data Ingestion API
+  version: 1.0.0
+  description: API for multi-part batch uploads to OneStream.
+servers:
+  - url: https://onestream.example.com
+
+paths:
+  /upload/multipart:
+    post:
+      summary: "Upload large files in multiple parts"
+      description: "Upload files to OneStream using multi-part uploads, with support for additional metadata."
+      operationId: multipartUpload
+      parameters:
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "onestream-datalake"
+          description: Name of the bucket in OneStream where the file will be uploaded.
+        - name: objectKey
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "datasets/2024/multi-part-upload.csv"
+          description: Object key (path) for the file in the data lake.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to be uploaded (e.g., CSV, JSON)
+                metadata:
+                  type: object
+                  description: Additional metadata to describe the file
+                  properties:
+                    team_tag:
+                      type: string
+                      example: "DataOps"
+                    batch_id:
+                      type: string
+                      example: "batch_2024_01"
+                    upload_timestamp:
+                      type: number
+                      example: 1627840293.12
+      responses:
+        200:
+          description: File successfully uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  object_key:
+                    type: string
+                    example: "datasets/2024/multi-part-upload.csv"
+                  message:
+                    type: string
+                    example: "File successfully uploaded."
+        400:
+          description: Error in file upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failure"
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Invalid file format"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+security:
+  - ApiKeyAuth: []
