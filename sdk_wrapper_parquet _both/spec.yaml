@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: OneStream Data Ingestion API
+  version: 1.0.1
+  description: API for uploading Parquet data to OneStream using SDK wrapper, supporting both file uploads and in-memory Parquet data.
+servers:
+  - url: https://onestream.example.com
+
+paths:
+  /upload/file:
+    post:
+      summary: "Upload Parquet data (file or in-memory) using SDK wrapper"
+      description: "Uploads Parquet data to the data lake, either from a file or an in-memory Parquet DataFrame. Supports additional metadata."
+      operationId: uploadData
+      parameters:
+        - name: destination_path
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "/parquet-datasets/2024/products"
+          description: The path in the data lake where the file or data will be stored.
+      requestBody:
+        required: true
+        content:
+          # Support for in-memory Parquet data (binary stream)
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+              description: In-memory Parquet data (binary stream) to be uploaded
+          # Support for file uploads
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Parquet file to be uploaded
+                metadata:
+                  type: object
+                  description: Additional metadata about the file
+                  properties:
+                    team_tag:
+                      type: string
+                      example: "BusinessAnalytics"
+                    dataset_version:
+                      type: string
+                      example: "v1.2"
+                    upload_time:
+                      type: number
+                      example: 1627840293.12
+      responses:
+        200:
+          description: Parquet data successfully uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  destination_path:
+                    type: string
+                    example: "/parquet-datasets/2024/products"
+                  message:
+                    type: string
+                    example: "Parquet data successfully uploaded."
+        400:
+          description: Error in data upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failure"
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Data format not supported"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+security:
+  - ApiKeyAuth: []
