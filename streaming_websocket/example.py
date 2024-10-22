@@ -17,5 +17,5 @@ stream_data = {
 }
 
 # Send data to Kafka topic
-producer.send('onestream-topic', stream_data)
+producer.send('datalake-topic', stream_data)
 producer.flush()

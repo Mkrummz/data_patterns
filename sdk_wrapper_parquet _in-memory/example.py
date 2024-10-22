@@ -1,12 +1,12 @@
-from onestream_sdk import OneStreamClientWrapper  # Hypothetical SDK wrapper for OneStream
+from datalake_sdk import DataLakeClientWrapper  # Hypothetical SDK wrapper for DataLake
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import time
 import io
 
-# Initialize OneStream client wrapper
-client = OneStreamClientWrapper(api_key="your_onestream_api_key", endpoint="https://onestream.example.com")
+# Initialize DataLake client wrapper
+client = DataLakeClientWrapper(api_key="your_datalake_api_key", endpoint="https://datalake.example.com")
 
 # Sample data in pandas DataFrame
 data = {
@@ -38,7 +38,7 @@ team_tag = "BusinessAnalytics"
 dataset_version = "v1.2"
 upload_time = time.time()
 
-# Upload the in-memory Parquet data to OneStream with additional metadata
+# Upload the in-memory Parquet data to DataLake with additional metadata
 response = client.upload_file(
     file_object=parquet_buffer,  # Pass the in-memory buffer as the file object
     destination_path='/parquet-datasets/2024/products',
@@ -52,6 +52,6 @@ response = client.upload_file(
 
 # Check the response to ensure the upload was successful
 if response.get("status") == "success":
-    print("Parquet data successfully uploaded to OneStream.")
+    print("Parquet data successfully uploaded to DataLake.")
 else:
     print(f"Upload failed: {response.get('error')}")

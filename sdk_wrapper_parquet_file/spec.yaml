@@ -1,10 +1,10 @@
 openapi: 3.0.0
 info:
-  title: OneStream Data Ingestion API
+  title: DataLake Data Ingestion API
   version: 1.0.0
-  description: API for Parquet file uploads to OneStream using SDK wrapper.
+  description: API for Parquet file uploads to DataLake using SDK wrapper.
 servers:
-  - url: https://onestream.example.com
+  - url: https://datalake.example.com
 
 paths:
   /upload/file:

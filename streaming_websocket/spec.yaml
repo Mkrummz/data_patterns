@@ -1,16 +1,16 @@
 openapi: 3.0.0
 info:
-  title: OneStream Data Ingestion API
+  title: DataLake Data Ingestion API
   version: 1.0.0
-  description: API for ingesting data into the OneStream data lake.
+  description: API for ingesting data into the DataLake data lake.
 servers:
-  - url: wss://onestream.example.com
+  - url: wss://datalake.example.com
 
 paths:
   /streaming:
     post:
-      summary: "Stream data to OneStream via WebSocket"
-      description: "Streams real-time data to OneStream data lake."
+      summary: "Stream data to DataLake via WebSocket"
+      description: "Streams real-time data to DataLake data lake."
       operationId: streamData
       requestBody:
         content:

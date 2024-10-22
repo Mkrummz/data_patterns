@@ -2,11 +2,11 @@ import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 import time
 
-# Credentials and settings for OneStream (could be similar to S3)
-access_key = 'your_onestream_access_key'
-secret_key = 'your_onestream_secret_key'
+# Credentials and settings for DataLake (could be similar to S3)
+access_key = 'your_datalake_access_key'
+secret_key = 'your_datalake_secret_key'
 region = 'us-west-2'
-bucket_name = 'onestream-datalake'
+bucket_name = 'datalake-datalake'
 file_path = 'data/multi-part-upload.csv'
 object_key = 'datasets/2024/multi-part-upload.csv'
 
@@ -15,7 +15,7 @@ team_tag = "DataOps"
 batch_id = "batch_2024_01"
 upload_timestamp = time.time()
 
-# Initialize OneStream client (AWS S3 compatible)
+# Initialize DataLake client (AWS S3 compatible)
 s3_client = boto3.client('s3', region_name=region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
 # Upload large file in multiple parts

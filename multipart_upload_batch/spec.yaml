@@ -1,16 +1,16 @@
 openapi: 3.0.0
 info:
-  title: OneStream Data Ingestion API
+  title: DataLake Data Ingestion API
   version: 1.0.0
-  description: API for multi-part batch uploads to OneStream.
+  description: API for multi-part batch uploads to DataLake.
 servers:
-  - url: https://onestream.example.com
+  - url: https://datalake.example.com
 
 paths:
   /upload/multipart:
     post:
       summary: "Upload large files in multiple parts"
-      description: "Upload files to OneStream using multi-part uploads, with support for additional metadata."
+      description: "Upload files to DataLake using multi-part uploads, with support for additional metadata."
       operationId: multipartUpload
       parameters:
         - name: bucket
@@ -18,8 +18,8 @@ paths:
           required: true
           schema:
             type: string
-            example: "onestream-datalake"
-          description: Name of the bucket in OneStream where the file will be uploaded.
+            example: "datalake-datalake"
+          description: Name of the bucket in DataLake where the file will be uploaded.
         - name: objectKey
           in: query
           required: true
